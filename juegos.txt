@@ -1,0 +1,31 @@
+1 "¿Cuánto nos conocemos?" - Quiz interactivo
+- Preguntas tipo: "¿Cuál fue nuestra primera película juntos?"
+- Sistema de puntos
+- Respuestas con feedback romántico
+- Al final: mensaje personalizado según puntuación
+
+"Memory Game" - Juego de memoria con fotos
+- Tarjetas con fotos de momentos juntos
+- Voltear y encontrar parejas
+- Temporizador y contador de intentos
+- Al completarlo: mensaje especial
+
+"Caza de Corazones" - Click en corazones flotantes
+- Corazones aparecen aleatoriamente
+- Hacer click antes de que desaparezcan
+- Cada 10 corazones: revelación de una frase romántica
+
+"Completa la Frase" - Fill in the blanks
+- Frases importantes de vuestra relación
+- Completar palabras clave
+- Estilo ahorcado pero romántico
+
+"Puzzle de Amor" - Rompecabezas de foto
+- Foto especial dividida en piezas
+- Arrastrar y soltar para completar
+- Al terminar: mensaje oculto se revela
+
+"Ruleta del Amor" - Spin the wheel
+- Girar ruleta para desbloquear promesas/cupones
+- "Un masaje", "Cena elegida por ti", "Día de películas", etc.
+- Guardar cupones desbloqueados
