@@ -20,6 +20,17 @@ const questions = [
         options: ['Anvorguesa', 'Pipsa', 'Petxugas empanadas', 'Ous rellens'],
         correct: 2
     },
+    {
+        question: '¿Cuál es mi número favorito?',
+        options: ['28', '8', '6', '76'],
+        correct: 1
+    },
+    {
+        question: '¿Cuál fue el primer regalo que te di?',
+        options: ['Un collar', 'Una sudadera', 'Un oso', 'Una colonia'],
+        correct: 2
+    },
+
 ]
 
 function selectAnswer(index) {
@@ -76,11 +87,11 @@ function restartGame() {
 </script>
 
 <template>
-    <div class="min-h-screen p-8 flex items-center justify-center">
+    <div class="min-h-screen p-4 md:p-8 flex items-center justify-center pt-20 md:pt-8">
         <div class="max-w-2xl w-full">
 
             <div v-if="!gameFinished"
-                class="bg-white/90 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border-4 border-pink-300">
+                class="bg-white/90 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-pink-300">
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-sm font-semibold text-gray-600">Pregunta {{ currentQuestion + 1 }}/{{
@@ -88,13 +99,13 @@ function restartGame() {
                         <span class="text-sm font-semibold text-purple-600">Puntos: {{ score }}</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full transition-all"
+                        <div class="bg-linear-to-r from-pink-500 to-purple-500 h-2 rounded-full transition-all"
                             :style="{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }">
                         </div>
                     </div>
                 </div>
 
-                <h2 class="text-3xl font-bold text-gray-800 mb-8">
+                <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-8">
                     {{ questions[currentQuestion].question }}
                 </h2>
 

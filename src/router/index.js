@@ -23,6 +23,11 @@ const router = createRouter({
       path: '/phrase',
       name: 'phrase',
       component: () => import('../views/PhraseGame.vue')
+    },
+    {
+      path: '/guess-photo',
+      name: 'guess-photo',
+      component: () => import('../views/GuessPhotoGame.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {
