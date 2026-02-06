@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import ValentineProposal from '../views/ValentineProposal.vue'
 import Home from '../views/Home.vue'
 
 const router = createRouter({
@@ -6,6 +7,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'proposal',
+      component: ValentineProposal
+    },
+    {
+      path: '/home',
       name: 'home',
       component: Home
     },

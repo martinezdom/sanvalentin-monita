@@ -4,7 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 const route = useRoute()
 
 const pages = [
-  { name: 'Inicio', path: '/' },
+  { name: 'Inicio', path: '/home' },
   { name: 'Quiz', path: '/quiz' },
   { name: 'Memory', path: '/memory' },
   { name: 'Frases', path: '/phrase' },
@@ -13,7 +13,7 @@ const pages = [
 </script>
 
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg shadow-md">
+  <nav v-if="route.path !== '/'" class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg shadow-md">
     <div class="flex justify-center items-center gap-2 px-2 py-3 flex-wrap">
       <RouterLink
         v-for="page in pages"
