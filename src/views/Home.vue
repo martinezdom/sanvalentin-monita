@@ -1,8 +1,25 @@
 <script setup>
+import { useGameStore } from '../stores/gameStore'
+
+const gameStore = useGameStore()
 </script>
 
 <template>
   <div class="min-h-screen p-4 md:p-8 lg:p-16 pt-20 md:pt-8">
+    <!-- All Games Completed Banner -->
+    <div v-if="gameStore.allGamesCompleted" class="reveal reveal-fade max-w-4xl mx-auto mb-8">
+      <router-link to="/love-letter" class="block">
+        <div class="bg-gradient-to-r from-pink-500 via-red-500 to-pink-500 text-white rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white text-center hover:scale-105 transition-transform cursor-pointer">
+          <div class="text-5xl md:text-6xl mb-4 animate-bounce">💕</div>
+          <h2 class="text-2xl md:text-4xl font-bold mb-2">¡Has completado todos los juegos!</h2>
+          <p class="text-lg md:text-xl mb-4">Tengo algo especial para ti...</p>
+          <div class="inline-block bg-white text-pink-600 px-6 py-3 rounded-full font-bold shadow-lg">
+            Ver mi carta de amor →
+          </div>
+        </div>
+      </router-link>
+    </div>
+
     <!-- Hero Section -->
     <section class="reveal reveal-fade max-w-4xl mx-auto text-center py-10 md:py-20">
       <div class="mb-6 md:mb-8 animate-pulse">
@@ -15,7 +32,7 @@
 
       <p class="text-sm md:text-base lg:text-xl text-gray-700 mb-6 md:mb-8">
         Espero que te guste este detallito. <br><br>
-        No tendré mucho dinerito para comprarte mil cosas, <br>pero siempre buscaré la forma de sacarte una sonrisa. <br>
+        No tendré mucho dinerito para comprarte mil cosas, <br>pero siempre buscaré la forma de sacarte una sonrisita. <br>
       </p>
 
       <button 

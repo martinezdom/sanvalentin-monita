@@ -1,49 +1,51 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useGameStore = defineStore('game', () => {
   // Estado
   const currentGame = ref(null)
-  const scores = ref({
-    quiz: 0,
-    memory: 0,
-    hearts: 0,
-    phrase: 0
+  const completedGames = ref(new Set())
+  
+  // Lista de todos los juegos
+  const allGames = ['quiz', 'memory', 'phrase', 'guess-photo']
+  
+  // Computed
+  const allGamesCompleted = computed(() => {
+    return allGames.every(game => completedGames.value.has(game))
   })
-  const completedGames = ref([])
   
   // Acciones
   function setCurrentGame(game) {
     currentGame.value = game
   }
   
-  function updateScore(game, score) {
-    scores.value[game] = score
-  }
-  
   function markGameAsCompleted(game) {
-    if (!completedGames.value.includes(game)) {
-      completedGames.value.push(game)
+    completedGames.value.add(game)
+    // Guardar en localStorage para persistencia
+    localStorage.setItem('completedGames', JSON.stringify([...completedGames.value]))
+  }
+  
+  function loadCompletedGames() {
+    const saved = localStorage.getItem('completedGames')
+    if (saved) {
+      completedGames.value = new Set(JSON.parse(saved))
     }
   }
   
-  function resetScores() {
-    scores.value = {
-      quiz: 0,
-      memory: 0,
-      hearts: 0,
-      phrase: 0
-    }
-    completedGames.value = []
+  function resetProgress() {
+    completedGames.value = new Set()
+    localStorage.removeItem('completedGames')
   }
+  
+  // Cargar juegos completados al iniciar
+  loadCompletedGames()
   
   return {
     currentGame,
-    scores,
     completedGames,
+    allGamesCompleted,
     setCurrentGame,
-    updateScore,
     markGameAsCompleted,
-    resetScores
+    resetProgress
   }
 })

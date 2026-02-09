@@ -6,11 +6,11 @@
       <div class="mb-8 text-6xl md:text-8xl animate-bounce">💕</div>
 
       <h1 class="text-3xl md:text-5xl font-bold text-pink-700 mb-4">
-        ¿Quieres ser mi San Valentín?
+        ¿Usted desearía ser mi San Valentín?
       </h1>
 
       <p class="text-lg md:text-xl text-gray-700 mb-12">
-        Tengo algunos jueguecillos preparados para nosotros dos. ¿Aceptas?
+        Tengo algunos jueguecillos preparados para nosotros dos. ¿Aseptas?
       </p>
 
       <!-- Botón SI -->
@@ -81,7 +81,7 @@ const encouragementTexts = [
   '¿Seguro? 🥺',
   'Piénsalo mejor...',
   'Venga 😭',
-  'No seas así...',
+  'Por favor!!',
   'Ya sabes la respuesta 😏'
 ]
 

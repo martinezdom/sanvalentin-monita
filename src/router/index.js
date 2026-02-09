@@ -34,6 +34,11 @@ const router = createRouter({
       path: '/guess-photo',
       name: 'guess-photo',
       component: () => import('../views/GuessPhotoGame.vue')
+    },
+    {
+      path: '/love-letter',
+      name: 'love-letter',
+      component: () => import('../views/LoveLetter.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {

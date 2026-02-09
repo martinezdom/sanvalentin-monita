@@ -1,7 +1,14 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useGameStore } from '../stores/gameStore'
 
+const gameStore = useGameStore()
 const baseUrl = import.meta.env.BASE_URL
+
+// Marcar como completado cuando se monta el componente (ya que es un viewer sin final)
+onMounted(() => {
+  gameStore.markGameAsCompleted('guess-photo')
+})
 
 const photos = [
   {
