@@ -43,7 +43,7 @@
         left: `${noPos.x}px`,
         top: `${noPos.y}px`,
         padding: '12px 24px',
-        zIndex: 40,
+        zIndex: 9999,
         cursor: dodgesLeft ? 'pointer' : 'not-allowed'
       }"
     >
@@ -90,8 +90,8 @@ const dodgesLeft = computed(() => noHoverCount.value < MAX_DODGES)
 const randomPosition = () => {
   const padding = 20
   return {
-    x: Math.random() * (window.innerWidth - 120) + padding,
-    y: Math.random() * (window.innerHeight - 60) + padding
+    x: Math.random() * (window.innerWidth - 150) + padding,
+    y: Math.random() * (window.innerHeight - 100) + padding
   }
 }
 
@@ -110,7 +110,10 @@ const handleNoHover = () => {
 }
 
 const handleNoClick = () => {
-  if (dodgesLeft.value) return
+  if (dodgesLeft.value) {
+    handleNoHover()
+    return
+  }
 
   noClickCount.value++
   yesSize.value += 10

@@ -168,8 +168,8 @@ initializeGame()
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 pt-20 md:pt-8 pb-8 px-4 md:px-8">
-    <div class="max-w-5xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex flex-col justify-center">
+    <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl md:text-5xl font-bold text-purple-600 mb-4 text-center">Memory Game 🃏</h1>
       <p class="text-base md:text-lg text-gray-700 mb-6 text-center">Encuentra todas las parejas de cartas</p>
       
@@ -186,43 +186,36 @@ initializeGame()
       </div>
 
       <!-- Game Board -->
-      <div class="grid grid-cols-4 md:grid-cols-5 gap-3 md:gap-4 mb-8">
+      <div class="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 perspective-1000">
         <div
           v-for="(card, index) in cards"
           :key="index"
           @click="flipCard(index)"
-          class="aspect-square rounded-xl cursor-pointer transform transition-all duration-300 hover:scale-105"
+          class="w-24 h-24 md:w-48 md:h-48 relative cursor-pointer group"
           :class="{
             'pointer-events-none': card.isFlipped || card.isMatched || flippedCards.length >= 2
           }"
         >
-          <div class="relative w-full h-full" style="perspective: 1000px;">
+          <div
+            class="w-full h-full transition-all duration-500 transform-style-3d shadow-xl rounded-xl"
+            :class="{ 'rotate-y-180': card.isFlipped || card.isMatched }"
+          >
+            <!-- Front (card back) -->
             <div
-              class="absolute w-full h-full transition-transform duration-500"
-              :style="{
-                transformStyle: 'preserve-3d',
-                transform: card.isFlipped || card.isMatched ? 'rotateY(180deg)' : 'rotateY(0deg)'
-              }"
+              class="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center backface-hidden border-2 border-white/20"
             >
-              <!-- Front (card back) -->
-              <div
-                class="absolute w-full h-full rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center shadow-lg"
-                style="backface-visibility: hidden;"
+              <div class="text-3xl md:text-6xl animate-pulse">💕</div>
+            </div>
+            
+            <!-- Back (card image) -->
+            <div
+              class="absolute inset-0 w-full h-full bg-white rounded-xl rotate-y-180 backface-hidden overflow-hidden border-2 border-purple-200"
+            >
+              <img
+                :src="`${baseUrl}games/memory/${card.image}`"
+                :alt="`Carta ${card.pairId}`"
+                class="w-full h-full object-cover"
               >
-                <div class="text-4xl md:text-5xl">💕</div>
-              </div>
-              
-              <!-- Back (card image) -->
-              <div
-                class="absolute w-full h-full rounded-xl bg-white shadow-lg overflow-hidden"
-                style="backface-visibility: hidden; transform: rotateY(180deg);"
-              >
-                <img
-                  :src="`${baseUrl}games/memory/${card.image}`"
-                  :alt="`Carta ${card.pairId}`"
-                  class="w-full h-full object-contain p-2"
-                >
-              </div>
             </div>
           </div>
         </div>

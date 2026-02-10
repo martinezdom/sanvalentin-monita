@@ -10,33 +10,39 @@ const phrases = [
   {
     text: 'Lo que más me gusta de ti es tu ___',
     options: ['sonrisa', 'mirada', 'personalidad', 'forma de ser'],
-    correct: 0 // índice de la respuesta correcta (puedes cambiarlo)
+    correct: 0, // índice de la respuesta correcta (puedes cambiarlo)
+    image: '/assets/placeholder.jpg'
   },
   {
     text: 'Nuestro primer beso fue ___',
     options: ['mágico', 'inesperado', 'perfecto', 'inolvidable'],
-    correct: 2
+    correct: 2,
+    image: '/assets/placeholder.jpg'
   },
   {
     text: 'Cuando estoy contigo me siento ___',
     options: ['feliz', 'completo/a', 'en casa', 'afortunado/a'],
-    correct: 1
+    correct: 1,
+    image: '/assets/placeholder.jpg'
   },
   {
     text: 'Lo que más recuerdo de nuestra primera cita es ___',
     options: ['tu nerviosismo', 'tu risa', 'tus ojos', 'nuestra conversación'],
-    correct: 3
+    correct: 3,
+    image: '/assets/placeholder.jpg'
   },
   {
     text: 'Me enamoré de ti cuando ___',
     options: ['te vi sonreír', 'me miraste así', 'fuiste tú mismo/a', 'me hiciste reír'],
-    correct: 0
+    correct: 0,
+    image: '/assets/placeholder.jpg'
   }
 ]
 
 const currentPhraseIndex = ref(0)
 const selectedAnswers = ref(Array(phrases.length).fill(null))
 const showResults = ref(false)
+const showReward = ref(false)
 
 const currentPhrase = computed(() => phrases[currentPhraseIndex.value])
 const isLastPhrase = computed(() => currentPhraseIndex.value === phrases.length - 1)
@@ -55,6 +61,15 @@ watch(showResults, (show) => {
 
 const selectAnswer = (optionIndex) => {
   selectedAnswers.value[currentPhraseIndex.value] = optionIndex
+  if (optionIndex === currentPhrase.value.correct) {
+    showReward.value = true
+  }
+}
+
+const closeReward = () => {
+  showReward.value = false
+  // Optional: Auto-advance after closing reward
+  // nextPhrase() 
 }
 
 const nextPhrase = () => {
@@ -83,7 +98,7 @@ const goToHome = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-pink-100 pt-20 md:pt-8 pb-8 px-4 md:px-8">
+  <div class="min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-pink-100 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex flex-col justify-center">
     <div class="max-w-3xl mx-auto">
       <h1 class="text-3xl md:text-5xl font-bold text-pink-600 mb-4 text-center">Completa la Frase ✍️</h1>
       <p class="text-base md:text-lg text-gray-700 mb-8 text-center">Elige la palabra que mejor complete cada frase</p>
@@ -199,5 +214,30 @@ const goToHome = () => {
         </div>
       </div>
     </div>
+    <!-- Reward Modal -->
+    <div v-if="showReward" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" @click.self="closeReward">
+      <div class="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col items-center shadow-2xl animate-bounce-in relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-pink-100/50 to-red-50/50 -z-10"></div>
+        <h3 class="text-3xl font-bold text-pink-600 mb-6">¡Correcto! 🥰</h3>
+        <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-inner bg-gray-100">
+          <img :src="currentPhrase.image || '/assets/placeholder.jpg'" alt="Recompensa" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500" />
+        </div>
+        <button @click="closeReward" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
+          Continuar 💖
+        </button>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+}
+</style>
