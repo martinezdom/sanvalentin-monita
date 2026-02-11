@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-pink-200 via-red-100 to-pink-200 pt-20 md:pt-8 pb-8 px-4 md:px-8 flex items-center justify-center">
+  <div class="min-h-screen bg-gradient-to-br from-pink-200 via-red-100 to-pink-200 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex items-center justify-center">
     <div class="max-w-4xl mx-auto">
       <!-- Celebration Header -->
       <div class="text-center mb-8">

@@ -46,6 +46,8 @@ const currentPhraseIndex = ref(0)
 const selectedAnswers = ref(Array(phrases.length).fill(null))
 const showResults = ref(false)
 const showReward = ref(false)
+const failedAttempts = ref(new Set())
+const showGeneralError = ref(false)
 const question3Attempts = ref(new Set())
 const showQuestion3Error = ref(false)
 
@@ -65,21 +67,27 @@ watch(showResults, (show) => {
 })
 
 const selectAnswer = (optionIndex) => {
-  // Si es la pregunta especial (pregunta 3, índice 2) y no es el botón final
-  if (currentPhraseIndex.value === 2 && optionIndex !== 4) {
-    question3Attempts.value.add(optionIndex)
-    showQuestion3Error.value = true
-    // Ocultar el mensaje después de 2 segundos
-    setTimeout(() => {
-      showQuestion3Error.value = false
-    }, 2000)
-    return
+  // Special handling for Question 3 (Index 2)
+  if (currentPhraseIndex.value === 2) {
+    if (optionIndex !== 4) {
+      question3Attempts.value.add(optionIndex)
+      showQuestion3Error.value = true
+      setTimeout(() => showQuestion3Error.value = false, 2000)
+      return
+    }
+  } else {
+    // Normal handling for other questions
+    if (optionIndex !== currentPhrase.value.correct) {
+      failedAttempts.value.add(optionIndex)
+      showGeneralError.value = true
+      setTimeout(() => showGeneralError.value = false, 2000)
+      return
+    }
   }
   
+  // If correct (or special question accepted)
   selectedAnswers.value[currentPhraseIndex.value] = optionIndex
-  if (optionIndex === currentPhrase.value.correct) {
-    showReward.value = true
-  }
+  showReward.value = true
 }
 
 const closeReward = () => {
@@ -91,7 +99,9 @@ const closeReward = () => {
 const nextPhrase = () => {
   if (currentPhraseIndex.value < phrases.length - 1) {
     currentPhraseIndex.value++
-    // Resetear estado de pregunta 3 al cambiar
+    // Reset state for next question
+    failedAttempts.value.clear()
+    showGeneralError.value = false
     if (currentPhraseIndex.value !== 2) {
       showQuestion3Error.value = false
     }
@@ -103,6 +113,12 @@ const nextPhrase = () => {
 const previousPhrase = () => {
   if (currentPhraseIndex.value > 0) {
     currentPhraseIndex.value--
+    // We might want to keep history if they go back, but resetting is cleaner for "retry" logic
+    // actually, if they go back to a question they already answered correctly, we should probably keep it answered.
+    // The current logic stores answer in `selectedAnswers`.
+    // We can clear failedAttempts effectively since they might re-try? No, let's just clear failedAttempts.
+    failedAttempts.value.clear()
+    showGeneralError.value = false
   }
 }
 
@@ -112,6 +128,8 @@ const resetGame = () => {
   showResults.value = false
   question3Attempts.value = new Set()
   showQuestion3Error.value = false
+  failedAttempts.value = new Set()
+  showGeneralError.value = false
 }
 
 const goToHome = () => {
@@ -155,11 +173,12 @@ const goToHome = () => {
             class="p-4 rounded-2xl font-semibold text-lg transition-all border-2" :class="[
               selectedAnswers[currentPhraseIndex] === index
                 ? 'bg-pink-500 text-white border-pink-500 shadow-lg'
-                : currentPhraseIndex === 2 && question3Attempts.has(index)
-                  ? 'bg-red-100 text-gray-600 border-red-300 line-through'
+                : failedAttempts.has(index) || (currentPhraseIndex === 2 && question3Attempts.has(index))
+                  ? 'bg-red-100 text-red-600 border-red-300'
                   : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:bg-pink-50'
             ]">
             {{ option }}
+            <span v-if="failedAttempts.has(index) || (currentPhraseIndex === 2 && question3Attempts.has(index))" class="ml-2">❌</span>
           </button>
           
           <!-- Botón especial para pregunta 3 -->
@@ -170,11 +189,10 @@ const goToHome = () => {
           </button>
         </div>
 
-        <!-- Mensaje de error para pregunta 3 -->
-        <div v-if="currentPhraseIndex === 2 && showQuestion3Error"
+        <!-- Mensaje de error (General y Especial) -->
+        <div v-if="showGeneralError || (currentPhraseIndex === 2 && showQuestion3Error)"
           class="mb-6 p-4 bg-red-100 border-2 border-red-300 rounded-2xl text-center animate-shake">
           <p class="text-red-600 font-semibold text-lg">❌ ¡Incorrecto! Sigue intentando...</p>
-          <p class="text-red-500 text-sm mt-1">Pista: ¿Quizás todas sean correctas? 🤔</p>
         </div>
 
         <!-- Navigation -->

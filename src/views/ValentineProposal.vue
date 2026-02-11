@@ -50,10 +50,40 @@
       No
     </button>
 
-    <!-- Efecto final -->
-    <div v-if="finalMode" class="fixed inset-0 pointer-events-none hearts">
-      💕 💖 💘 💝 💞 💗 💓
-    </div>
+    <!-- Efecto final (Overlay) -->
+    <transition name="fade">
+      <div v-if="finalMode" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-pink-500/90 via-red-500/90 to-purple-600/90 backdrop-blur-sm overflow-hidden">
+        
+        <!-- Lluvia de corazones -->
+        <div v-for="i in 50" :key="i" 
+          class="absolute text-4xl animate-float-up pointer-events-none opacity-0"
+          :style="{
+            left: `${Math.random() * 100}vw`,
+            animationDelay: `${Math.random() * 2}s`,
+            animationDuration: `${3 + Math.random() * 4}s`,
+            fontSize: `${20 + Math.random() * 40}px`
+          }"
+        >
+          {{ ['❤️', '💖', '💕', '💘', '💝', '💞'][Math.floor(Math.random() * 6)] }}
+        </div>
+
+        <div class="relative z-10 text-center animate-zoom-in">
+          <h1 class="text-6xl md:text-9xl font-bold text-white mb-8 drop-shadow-lg">
+            ¡SIII! 🥰
+          </h1>
+          <p class="text-2xl md:text-4xl text-white font-medium mb-12 drop-shadow-md">
+            Sabía que dirías que sí... 😏
+          </p>
+          
+          <button 
+            @click="acceptProposal"
+            class="bg-white text-pink-600 px-12 py-4 rounded-full text-xl font-bold shadow-2xl hover:scale-110 transition-transform cursor-pointer animate-pulse"
+          >
+            Continuar ❤️
+          </button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -125,7 +155,8 @@ const handleNoClick = () => {
 
 const triggerFinal = () => {
   finalMode.value = true
-  setTimeout(acceptProposal, 1500)
+  // Removed auto-redirect to let them see the animation
+  // setTimeout(acceptProposal, 4000) 
 }
 
 const acceptProposal = () => {
@@ -167,16 +198,42 @@ onBeforeUnmount(() => {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes hearts {
-  from { opacity: 0; transform: scale(0.5); }
-  to { opacity: 1; transform: scale(2); }
+@keyframes float-up {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20vh) scale(1) rotate(360deg);
+    opacity: 0;
+  }
 }
 
-.hearts {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
-  animation: hearts 1.2s ease-out forwards;
+.animate-float-up {
+  animation-name: float-up;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes zoom-in {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.5s ease-out forwards;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

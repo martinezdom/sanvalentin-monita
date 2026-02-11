@@ -100,7 +100,7 @@ function resetPhoto() {
 </script>
 
 <template>
-  <div class="min-h-screen p-4 md:p-8 flex items-center justify-center pt-20 md:pt-8">
+  <div class="min-h-screen p-4 md:p-8 flex items-center justify-center pt-24 md:pt-8">
     <div class="max-w-2xl w-full">
       <div class="bg-white/90 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-purple-300">
         
