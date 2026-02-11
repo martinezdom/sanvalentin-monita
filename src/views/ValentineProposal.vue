@@ -10,7 +10,7 @@
       </h1>
 
       <p class="text-lg md:text-xl text-gray-700 mb-12">
-        Tengo algunos jueguecillos preparados para nosotros dos. ¿Aseptas?
+        Tengo algunos jueguitos preparados para nosotros dos. ¿Aseptas?
       </p>
 
       <!-- Botón SI -->

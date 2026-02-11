@@ -117,7 +117,7 @@ function resetPhoto() {
         </div>
 
         <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
-          ¿Reconoces este momento? 📸
+          ¿Te acuerdas de este momento? 📸
         </h2>
 
         <!-- Foto difuminada -->

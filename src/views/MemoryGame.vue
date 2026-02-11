@@ -171,7 +171,7 @@ initializeGame()
   <div class="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex flex-col justify-center">
     <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl md:text-5xl font-bold text-purple-600 mb-4 text-center">Memory Game 🃏</h1>
-      <p class="text-base md:text-lg text-gray-700 mb-6 text-center">Encuentra todas las parejas de cartas</p>
+      <p class="text-base md:text-lg text-gray-700 mb-6 text-center">Encuentra todas las parejas de fotos</p>
       
       <!-- Stats -->
       <div class="flex justify-center gap-6 mb-8 text-center">
