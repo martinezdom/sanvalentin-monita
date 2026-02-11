@@ -96,5 +96,13 @@ const gameStore = useGameStore()
         </div>
       </div>
     </section>
+
+
+    <!-- Footer / Link Carta -->
+    <footer class="text-center py-10 pb-24">
+      <router-link to="/love-letter" class="inline-block bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+        💌 Cartita para usted
+      </router-link>
+    </footer>
   </div>
 </template>

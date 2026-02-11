@@ -72,7 +72,7 @@
             ¡SIII! 🥰
           </h1>
           <p class="text-2xl md:text-4xl text-white font-medium mb-12 drop-shadow-md">
-            Sabía que dirías que sí... 😏
+            Ves, ya sabía yo que dirías que sí...
           </p>
           
           <button 
