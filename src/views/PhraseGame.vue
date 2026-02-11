@@ -5,44 +5,49 @@ import { useGameStore } from '../stores/gameStore'
 
 const router = useRouter()
 const gameStore = useGameStore()
+const baseUrl = import.meta.env.BASE_URL
 
 const phrases = [
   {
     text: 'Lo que más me gusta de ti es tu ___',
-    options: ['sonrisa', 'mirada', 'personalidad', 'forma de ser'],
-    correct: 0, // índice de la respuesta correcta (puedes cambiarlo)
-    image: '/assets/placeholder.jpg'
-  },
-  {
-    text: 'Nuestro primer beso fue ___',
-    options: ['mágico', 'inesperado', 'perfecto', 'inolvidable'],
-    correct: 2,
-    image: '/assets/placeholder.jpg'
-  },
-  {
-    text: 'Cuando estoy contigo me siento ___',
-    options: ['feliz', 'completo/a', 'en casa', 'afortunado/a'],
-    correct: 1,
-    image: '/assets/placeholder.jpg'
-  },
-  {
-    text: 'Lo que más recuerdo de nuestra primera cita es ___',
-    options: ['tu nerviosismo', 'tu risa', 'tus ojos', 'nuestra conversación'],
-    correct: 3,
-    image: '/assets/placeholder.jpg'
-  },
-  {
-    text: 'Me enamoré de ti cuando ___',
-    options: ['te vi sonreír', 'me miraste así', 'fuiste tú mismo/a', 'me hiciste reír'],
+    options: ['sonrisa', 'mirada', 'personalidad', 'qlo'],
     correct: 0,
-    image: '/assets/placeholder.jpg'
+    image: `${baseUrl}games/phrase/sonrisa.jpg`
+  },
+  {
+    text: 'Si fueras un animal serías ___',
+    options: ['un koala', 'un pingüino', 'una perra (roar)', 'una gata'],
+    correct: 1,
+    image: `${baseUrl}games/phrase/pinguino.jpg`
+  },
+  {
+    text: 'Tu superpoder secreto es ___',
+    options: ['Desquiciarme a más no poder', 'Cagar truños inmensos', 'Dormir ilimitadamente', 'Levantar cosas sin tocarlas'],
+    correct: 4,
+    image: `${baseUrl}games/phrase/todo.jpg`,
+    specialQuestion: true
+  },
+  {
+    text: 'Tu peor defecto es que ___',
+    options: ['me robas la manta', 'te duermes sin avisar durante 3h', 'escuchas cantantes mierdosos', 'siempre tienes razón (aunque no la tengas)'],
+    correct: 3,
+    image: `${baseUrl}games/phrase/mono.jpg`
+  },
+  {
+    text: 'Si pudieras comer solo una cosa el resto de tu vida sería ___',
+    options: ['pablo', 'mi pichote', 'kinder buenos', 'ensalada'],
+    correct: 0,
+    image: `${baseUrl}games/phrase/pablo.jpg`
   }
+
 ]
 
 const currentPhraseIndex = ref(0)
 const selectedAnswers = ref(Array(phrases.length).fill(null))
 const showResults = ref(false)
 const showReward = ref(false)
+const question3Attempts = ref(new Set())
+const showQuestion3Error = ref(false)
 
 const currentPhrase = computed(() => phrases[currentPhraseIndex.value])
 const isLastPhrase = computed(() => currentPhraseIndex.value === phrases.length - 1)
@@ -60,6 +65,17 @@ watch(showResults, (show) => {
 })
 
 const selectAnswer = (optionIndex) => {
+  // Si es la pregunta especial (pregunta 3, índice 2) y no es el botón final
+  if (currentPhraseIndex.value === 2 && optionIndex !== 4) {
+    question3Attempts.value.add(optionIndex)
+    showQuestion3Error.value = true
+    // Ocultar el mensaje después de 2 segundos
+    setTimeout(() => {
+      showQuestion3Error.value = false
+    }, 2000)
+    return
+  }
+  
   selectedAnswers.value[currentPhraseIndex.value] = optionIndex
   if (optionIndex === currentPhrase.value.correct) {
     showReward.value = true
@@ -75,6 +91,10 @@ const closeReward = () => {
 const nextPhrase = () => {
   if (currentPhraseIndex.value < phrases.length - 1) {
     currentPhraseIndex.value++
+    // Resetear estado de pregunta 3 al cambiar
+    if (currentPhraseIndex.value !== 2) {
+      showQuestion3Error.value = false
+    }
   } else {
     showResults.value = true
   }
@@ -90,6 +110,8 @@ const resetGame = () => {
   currentPhraseIndex.value = 0
   selectedAnswers.value = Array(phrases.length).fill(null)
   showResults.value = false
+  question3Attempts.value = new Set()
+  showQuestion3Error.value = false
 }
 
 const goToHome = () => {
@@ -98,24 +120,25 @@ const goToHome = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-pink-100 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex flex-col justify-center">
+  <div
+    class="min-h-screen bg-gradient-to-br from-pink-100 via-red-50 to-pink-100 pt-24 md:pt-8 pb-8 px-4 md:px-8 flex flex-col justify-center">
     <div class="max-w-3xl mx-auto">
       <h1 class="text-3xl md:text-5xl font-bold text-pink-600 mb-4 text-center">Completa la Frase ✍️</h1>
       <p class="text-base md:text-lg text-gray-700 mb-8 text-center">Elige la palabra que mejor complete cada frase</p>
 
       <!-- Game Content -->
-      <div v-if="!showResults" class="bg-white/90 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-pink-300">
+      <div v-if="!showResults"
+        class="bg-white/90 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-pink-300">
         <!-- Progress -->
         <div class="mb-6">
           <div class="flex justify-between items-center mb-2">
             <span class="text-sm text-gray-600">Frase {{ currentPhraseIndex + 1 }} de {{ phrases.length }}</span>
-            <span class="text-sm text-gray-600">{{ selectedAnswers.filter(a => a !== null).length }}/{{ phrases.length }} completadas</span>
+            <span class="text-sm text-gray-600">{{selectedAnswers.filter(a => a !== null).length}}/{{ phrases.length
+            }} completadas</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              class="bg-gradient-to-r from-pink-500 to-red-500 h-2 rounded-full transition-all duration-300"
-              :style="{ width: `${((currentPhraseIndex + 1) / phrases.length) * 100}%` }"
-            ></div>
+            <div class="bg-gradient-to-r from-pink-500 to-red-500 h-2 rounded-full transition-all duration-300"
+              :style="{ width: `${((currentPhraseIndex + 1) / phrases.length) * 100}%` }"></div>
           </div>
         </div>
 
@@ -128,40 +151,45 @@ const goToHome = () => {
 
         <!-- Options -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <button
-            v-for="(option, index) in currentPhrase.options"
-            :key="index"
-            @click="selectAnswer(index)"
-            class="p-4 rounded-2xl font-semibold text-lg transition-all border-2"
-            :class="selectedAnswers[currentPhraseIndex] === index 
-              ? 'bg-pink-500 text-white border-pink-500 shadow-lg' 
-              : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:bg-pink-50'"
-          >
+          <button v-for="(option, index) in currentPhrase.options" :key="index" @click="selectAnswer(index)"
+            class="p-4 rounded-2xl font-semibold text-lg transition-all border-2" :class="[
+              selectedAnswers[currentPhraseIndex] === index
+                ? 'bg-pink-500 text-white border-pink-500 shadow-lg'
+                : currentPhraseIndex === 2 && question3Attempts.has(index)
+                  ? 'bg-red-100 text-gray-600 border-red-300 line-through'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-pink-300 hover:bg-pink-50'
+            ]">
             {{ option }}
           </button>
+          
+          <!-- Botón especial para pregunta 3 -->
+          <button v-if="currentPhraseIndex === 2 && question3Attempts.size === 4"
+            @click="selectAnswer(4)"
+            class="p-4 rounded-2xl font-semibold text-lg transition-all border-2 col-span-1 md:col-span-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-500 shadow-lg hover:shadow-xl animate-bounce-in">
+            ✨ Todas son correctas ✨
+          </button>
+        </div>
+
+        <!-- Mensaje de error para pregunta 3 -->
+        <div v-if="currentPhraseIndex === 2 && showQuestion3Error"
+          class="mb-6 p-4 bg-red-100 border-2 border-red-300 rounded-2xl text-center animate-shake">
+          <p class="text-red-600 font-semibold text-lg">❌ ¡Incorrecto! Sigue intentando...</p>
+          <p class="text-red-500 text-sm mt-1">Pista: ¿Quizás todas sean correctas? 🤔</p>
         </div>
 
         <!-- Navigation -->
         <div class="flex justify-between items-center gap-4">
-          <button
-            @click="previousPhrase"
-            :disabled="currentPhraseIndex === 0"
-            class="px-6 py-3 rounded-full font-semibold transition-all"
-            :class="currentPhraseIndex === 0 
-              ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-              : 'bg-gray-300 text-gray-700 hover:bg-gray-400'"
-          >
+          <button @click="previousPhrase" :disabled="currentPhraseIndex === 0"
+            class="px-6 py-3 rounded-full font-semibold transition-all" :class="currentPhraseIndex === 0
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-300 text-gray-700 hover:bg-gray-400'">
             ← Anterior
           </button>
-          
-          <button
-            @click="nextPhrase"
-            :disabled="!canContinue"
-            class="px-6 py-3 rounded-full font-semibold transition-all"
-            :class="canContinue 
-              ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white hover:shadow-lg' 
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'"
-          >
+
+          <button @click="nextPhrase" :disabled="!canContinue"
+            class="px-6 py-3 rounded-full font-semibold transition-all" :class="canContinue
+              ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white hover:shadow-lg'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'">
             {{ isLastPhrase ? 'Ver resultados' : 'Siguiente →' }}
           </button>
         </div>
@@ -199,30 +227,30 @@ const goToHome = () => {
 
         <!-- Actions -->
         <div class="flex flex-col md:flex-row gap-4 justify-center">
-          <button
-            @click="resetGame"
-            class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-8 rounded-full transition-all"
-          >
+          <button @click="resetGame"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-8 rounded-full transition-all">
             Jugar de nuevo
           </button>
-          <button
-            @click="goToHome"
-            class="bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all"
-          >
+          <button @click="goToHome"
+            class="bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all">
             Volver al menú principal
           </button>
         </div>
       </div>
     </div>
     <!-- Reward Modal -->
-    <div v-if="showReward" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" @click.self="closeReward">
-      <div class="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col items-center shadow-2xl animate-bounce-in relative overflow-hidden">
+    <div v-if="showReward" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      @click.self="closeReward">
+      <div
+        class="bg-white rounded-3xl p-6 max-w-lg w-full max-h-[90vh] flex flex-col items-center shadow-2xl animate-bounce-in relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-pink-100/50 to-red-50/50 -z-10"></div>
         <h3 class="text-3xl font-bold text-pink-600 mb-6">¡Correcto! 🥰</h3>
-        <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-inner bg-gray-100">
-          <img :src="currentPhrase.image || '/assets/placeholder.jpg'" alt="Recompensa" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500" />
+        <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-inner bg-gray-100 flex items-center justify-center">
+          <img :src="currentPhrase.image || '/assets/placeholder.jpg'" alt="Recompensa"
+            class="w-full h-full object-contain" />
         </div>
-        <button @click="closeReward" class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
+        <button @click="closeReward"
+          class="bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
           Continuar 💖
         </button>
       </div>
@@ -232,12 +260,42 @@ const goToHome = () => {
 
 <style scoped>
 @keyframes bounce-in {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); opacity: 1; }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
+
 .animate-bounce-in {
   animation: bounce-in 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.6s ease-in-out;
 }
 </style>
